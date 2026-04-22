@@ -194,6 +194,7 @@ void pipeline_t::dispatch() {
             // Keep predicted destinations ready so dependents can issue speculatively.
             REN->write(PAY.buf[index].C_phys_reg, (uint64_t) PAY.buf[index].vp_pred_value);
             REN->set_ready(PAY.buf[index].C_phys_reg);
+            //IQ.wakeup(PAY.buf[index].C_phys_reg, true);
          }
          else {
             REN->clear_ready(PAY.buf[index].C_phys_reg);

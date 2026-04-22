@@ -77,7 +77,13 @@ void pipeline_t::execute(unsigned int lane_number) {
             if (hit && PAY.buf[index].C_valid){
                IQ.wakeup(PAY.buf[index].C_phys_reg, true);
                REN->set_ready(PAY.buf[index].C_phys_reg);
+
+               if (!PERFECT_VALUE_PRED && PAY.buf[index].vp_predicted && ((int64_t) PAY.buf[index].C_value.dw != PAY.buf[index].vp_pred_value)) {
+                  set_value_misprediction(PAY.buf[index].AL_index);
+               }
+
                REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value.dw);
+
             }
             // FIX_ME #13 END
          }
@@ -135,6 +141,11 @@ void pipeline_t::execute(unsigned int lane_number) {
          // FIX_ME #14 BEGIN
          // cout << "ISSUE AT FIX_ME 14" << endl;
          if(PAY.buf[index].C_valid){
+            
+         if (!PERFECT_VALUE_PRED && PAY.buf[index].vp_predicted && ((int64_t) PAY.buf[index].C_value.dw != PAY.buf[index].vp_pred_value)) {
+            set_value_misprediction(PAY.buf[index].AL_index);
+         }
+
             REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value.dw);
          }
          // FIX_ME #14 END
@@ -244,13 +255,6 @@ void pipeline_t::load_replay() {
       if (PAY.buf[index].C_valid) {
          assert(PAY.buf[index].C_log_reg != 0); // if X0, would have cleared C_valid in Decode Stage
          PAY.buf[index].C_value.dw = value;
-         
-         // MAYBE
-         if (!PERFECT_VALUE_PRED &&
-             PAY.buf[index].vp_predicted &&
-             ((int64_t) PAY.buf[index].C_value.dw != PAY.buf[index].vp_pred_value)) {
-            set_value_misprediction(PAY.buf[index].AL_index);
-         }
 
          // FIX_ME #18a
          // Tips:
@@ -261,6 +265,11 @@ void pipeline_t::load_replay() {
          // cout << "ISSUE AT FIX_ME 18A" << endl;
          IQ.wakeup(PAY.buf[index].C_phys_reg, true);
          REN->set_ready(PAY.buf[index].C_phys_reg);
+
+         if (!PERFECT_VALUE_PRED && PAY.buf[index].vp_predicted && ((int64_t) PAY.buf[index].C_value.dw != PAY.buf[index].vp_pred_value)) {
+            set_value_misprediction(PAY.buf[index].AL_index);
+         }
+
          REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value.dw);
          // FIX_ME #18a END
       }

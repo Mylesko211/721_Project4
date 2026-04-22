@@ -232,9 +232,7 @@ void pipeline_t::rename2() {
          bool is_fp_alu = (PAY.buf[index].fu == FU_ALU_FP);
          bool is_load = IS_LOAD(PAY.buf[index].flags);
 
-         PAY.buf[index].vp_eligible = ((is_int_alu && VP_PRED_INT_ALU) ||
-                                       (is_fp_alu && VP_PRED_FP_ALU) ||
-                                       (is_load && VP_PRED_LOAD));
+         PAY.buf[index].vp_eligible = ((is_int_alu && VP_PRED_INT_ALU) || (is_fp_alu && VP_PRED_FP_ALU) || (is_load && VP_PRED_LOAD));
 
          if (PAY.buf[index].vp_eligible) {
             int64_t pred_value = 0;
@@ -257,15 +255,13 @@ void pipeline_t::rename2() {
             else{
                uint64_t raw_confidence = 0;
                int64_t raw_pred_value = 0;
-               //bool available = ValuePred->probe(PAY.buf[index].pc, raw_pred_value, raw_confidence);
-               bool available = ValuePred->search(PAY.buf[index].pc);
 
-               PAY.buf[index].vp_meas_available = available;
+               PAY.buf[index].vp_meas_available = ValuePred->search(PAY.buf[index].pc);
 
-               // Record the exact VPQ slot allocated for this instruction so
-               // writeback can update the correct out-of-order entry.
                ValuePred->checkpoint(PAY.buf[index].vpq_index, PAY.buf[index].vpq_phase);
+
                pred_value = ValuePred->install_VPQ(PAY.buf[index].pc);
+               
                PAY.buf[index].vpq_allocated = true;
                confidence = ValuePred->get_confidence(PAY.buf[index].pc);
                PAY.buf[index].vp_meas_pred_value = pred_value;
@@ -284,11 +280,8 @@ void pipeline_t::rename2() {
                   }
                   else {
                      predicted = (confidence == SVP_CONF_MAX);
-                     if (predicted) confidence = SVP_CONF_MAX;
                   }
-               
                }
-
             if (predicted) {
                PAY.buf[index].vp_predicted = true;
                PAY.buf[index].vp_pred_value = pred_value;

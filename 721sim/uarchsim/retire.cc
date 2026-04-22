@@ -195,9 +195,6 @@ void pipeline_t::retire(size_t &instret) {
 
             // Flush PAY.
             PAY.clear();
-
-            // test
-            if(!PERFECT_VALUE_PRED) ValuePred->full_rollback();
          }
          else {
             // Pop the instruction from PAY.
@@ -229,9 +226,6 @@ void pipeline_t::retire(size_t &instret) {
          squash_complete(offending_PC);
          inc_counter(recovery_count);
          inc_counter(ld_vio_count);
-
-         // test
-         if(!PERFECT_VALUE_PRED) ValuePred->full_rollback();
 
          // Flush PAY.
          PAY.clear();

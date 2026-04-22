@@ -109,64 +109,56 @@ bool SVP::probe(uint64_t pc, int64_t &pred_value, uint64_t &confidence) {
 
 void SVP::update_SVP(uint64_t pc) {
     int index = (pc >> 2) & ((1ULL << index_bits) - 1);
-    if(search(pc)) {
-        int64_t new_stride = VPQ[VPQ_head].val - SVP_table[index].last_value;
-        if (new_stride == SVP_table[index].stride) {
-            if (SVP_table[index].confidence < confmax) SVP_table[index].confidence++;
-        }
-        else {
-            SVP_table[index].confidence = 0;
-            SVP_table[index].stride = new_stride;
-        }
-        SVP_table[index].last_value = VPQ[VPQ_head].val;
+    int64_t new_stride = VPQ[VPQ_head].val - SVP_table[index].last_value;
+    if (new_stride == SVP_table[index].stride) {
+        if (SVP_table[index].confidence < confmax) SVP_table[index].confidence++;
     }
-}
-
-void SVP::update_VPQ(uint64_t vpq_index, bool vpq_phase, uint64_t pc, int64_t true_value) {
-    (void) pc;
-
-    if (vpq_index >= qsize) {
-        return;
+    else {
+        SVP_table[index].confidence = 0;
+        SVP_table[index].stride = new_stride;
     }
-
-    VPQ_entry &entry = VPQ[vpq_index];
-    if (!entry.valid) {
-        return;
-    }
-
-    // Reject stale writebacks to recycled VPQ slots.
-    if (entry.phase != vpq_phase) {
-        return;
-    }
-
-    entry.val = true_value;
+    SVP_table[index].last_value = VPQ[VPQ_head].val;
     
 }
 
+void SVP::update_VPQ(uint64_t vpq_index, bool vpq_phase, uint64_t pc, int64_t true_value) {
+    VPQ[vpq_index].val = true_value;
+}
+
 bool SVP::install_SVP(uint64_t pc, int64_t true_value) {
+    int i = VPQ_head;
+    bool i_phase = VPQ_head_phase;
 
     int index = (pc >> 2) & ((1ULL << index_bits) - 1);
 
-    if(!search(pc)) {
-        uint64_t full_tag = pc >> (2 + index_bits);
-        uint64_t masked_tag;
-        if (tag_bits == 0) masked_tag = 0;
-        else if (tag_bits >= 64) masked_tag = full_tag;
-        else masked_tag = full_tag & ((1ULL << tag_bits) - 1ULL);
+    
+    uint64_t full_tag = pc >> (2 + index_bits);
+    uint64_t masked_tag;
+    if (tag_bits == 0) masked_tag = 0;
+    else if (tag_bits >= 64) masked_tag = full_tag;
+    else masked_tag = full_tag & ((1ULL << tag_bits) - 1ULL);
 
-        SVP_entry new_entry;
-        new_entry.instance = 0;
-        new_entry.valid = true;
-        new_entry.tag = masked_tag;
-        new_entry.last_value = true_value;
-        new_entry.stride = 0;
-        new_entry.confidence = 0;
+    SVP_entry new_entry;
+    new_entry.valid = true;
+    new_entry.tag = masked_tag;
+    new_entry.last_value = true_value;
+    new_entry.stride = 0;
+    new_entry.confidence = 0;
+    new_entry.instance = 0;
+        
+        
+    while(!(i == VPQ_tail && i_phase == VPQ_tail_phase)) {
+        if (VPQ[i].pc == pc) {
+            new_entry.instance++;
+        }
+        i = (i + 1) % qsize;
+        if (i == 0) i_phase = !i_phase;
+   }
 
-        SVP_table[index] = new_entry;
-        return true;
-    }
-    return false;
+    SVP_table[index] = new_entry;
+    return true;
 }
+
 
 int64_t SVP::install_VPQ(uint64_t pc) {
     int64_t pred_val = 0;
@@ -174,20 +166,10 @@ int64_t SVP::install_VPQ(uint64_t pc) {
     if (search(pc)) {
         uint64_t index = (pc >> 2) & ((1ULL << index_bits) - 1ULL);
         SVP_table[index].instance++;
-        uint64_t pred_u = (uint64_t) SVP_table[index].last_value +
-                          ((uint64_t) SVP_table[index].stride * (uint64_t) (SVP_table[index].instance));
-        pred_val = (int64_t) pred_u;
+        pred_val = SVP_table[index].last_value + (SVP_table[index].stride * SVP_table[index].instance);
     }
     else {
-        uint64_t index = (pc >> 2) & ((1ULL << index_bits) - 1ULL);
-        if (SVP_table[index].valid) {
-            uint64_t pred_u = (uint64_t) SVP_table[index].last_value +
-                              (uint64_t) SVP_table[index].stride;
-            pred_val = (int64_t) pred_u;
-        }
-        else {
-            pred_val = 0;
-        }
+        pred_val = 0;
     }
     VPQ[VPQ_tail].pc = pc;
     VPQ[VPQ_tail].val = pred_val;
@@ -200,25 +182,19 @@ int64_t SVP::install_VPQ(uint64_t pc) {
     }
     return pred_val;
 }
+
 bool SVP::retire_VPQ(uint64_t pc) {
-    (void) pc;
 
-    if (VPQ_head == VPQ_tail && VPQ_head_phase == VPQ_tail_phase) {
-        return false;
-    }
+    if (VPQ_head == VPQ_tail && VPQ_head_phase == VPQ_tail_phase) return false;
+    uint64_t index = (VPQ[VPQ_head].pc >> 2) & ((1ULL << index_bits) - 1ULL);
 
-    if (VPQ[VPQ_head].valid) {
-        uint64_t retire_pc = VPQ[VPQ_head].pc;
-        uint64_t index = (retire_pc >> 2) & ((1ULL << index_bits) - 1ULL);
-
-        if (search(retire_pc) && SVP_table[index].instance > 0) {
+        if (search(VPQ[VPQ_head].pc)) {
             SVP_table[index].instance--;
-            update_SVP(retire_pc);
+            update_SVP(VPQ[VPQ_head].pc);
         }
         else {
-            install_SVP(retire_pc, VPQ[VPQ_head].val);
+            install_SVP(VPQ[VPQ_head].pc, VPQ[VPQ_head].val);
         }
-    }
 
     VPQ[VPQ_head].valid = false;
 
@@ -230,6 +206,7 @@ bool SVP::retire_VPQ(uint64_t pc) {
 }
 
 void SVP::partial_rollback(uint64_t VPQ_tail_new, bool VPQ_tail_phase_new) {
+    uint64_t index;
     while (!(VPQ_tail == VPQ_tail_new && VPQ_tail_phase == VPQ_tail_phase_new)) {
         if(VPQ_tail == 0) {
             VPQ_tail_phase = !VPQ_tail_phase;
@@ -237,37 +214,49 @@ void SVP::partial_rollback(uint64_t VPQ_tail_new, bool VPQ_tail_phase_new) {
         }
         else VPQ_tail = VPQ_tail - 1;
 
-        uint64_t rollback_pc = VPQ[VPQ_tail].pc;
-        uint64_t index = (rollback_pc >> 2) & ((1ULL << index_bits) - 1ULL);
-        if (search(rollback_pc) && SVP_table[index].instance > 0) {
+        index = (VPQ[VPQ_tail].pc >> 2) & ((1ULL << index_bits) - 1ULL);
+        if (search(VPQ[VPQ_tail].pc)) {
             SVP_table[index].instance--;
         }
-        VPQ[VPQ_tail].valid = false;
     }
+
+    index = (VPQ[VPQ_tail].pc >> 2) & ((1ULL << index_bits) - 1ULL);
+    if (search(VPQ[VPQ_tail].pc)) {
+            SVP_table[index].instance--;
+    }
+
     return;
 }
 
 void SVP::full_rollback() {
+
+    /*
     while (!(VPQ_tail == VPQ_head && VPQ_tail_phase == VPQ_head_phase)) {
         if(VPQ_tail == 0) {
             VPQ_tail_phase = !VPQ_tail_phase;
             VPQ_tail = qsize - 1;
         }
         else VPQ_tail = VPQ_tail - 1;
-        uint64_t rollback_pc = VPQ[VPQ_tail].pc;
-        uint64_t index = (rollback_pc >> 2) & ((1ULL << index_bits) - 1ULL);
-        if (search(rollback_pc) && SVP_table[index].instance > 0) {
+        uint64_t index = (VPQ[VPQ_tail].pc >> 2) & ((1ULL << index_bits) - 1ULL);
+        if (search(VPQ[VPQ_tail].pc)) {
             SVP_table[index].instance--;
         }
-        VPQ[VPQ_tail].valid = false;
     }
+    */
+
+    for (int i = 0; i < qsize; i++) {
+        SVP_table[i].instance = 0;
+    }
+    VPQ_head = 0;
+    VPQ_tail = 0;
+    VPQ_head_phase = false;
+    VPQ_tail_phase = false;
+
     return;
 }
 
 bool SVP::search(uint64_t pc) {
     int index = (pc >> 2) & ((1ULL << index_bits) - 1ULL);
-
-    if (!SVP_table[index].valid) return false;
 
     if (tag_bits == 0) return true;
 
