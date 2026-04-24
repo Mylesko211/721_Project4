@@ -102,6 +102,12 @@ void pipeline_t::execute(unsigned int lane_number) {
                if (!PAY.buf[index].vp_predicted || ((int64_t) PAY.buf[index].C_value.dw != PAY.buf[index].vp_pred_value)) {
                   REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value.dw);
                }
+               if (!PERFECT_VALUE_PRED && PAY.buf[index].vp_eligible && PAY.buf[index].vpq_allocated) {
+                  ValuePred->update_VPQ(PAY.buf[index].vpq_index,
+                                        PAY.buf[index].vpq_phase,
+                                        PAY.buf[index].pc,
+                                        (int64_t) PAY.buf[index].C_value.dw);
+               }
             }
             // FIX_ME #13 END
          }
@@ -174,6 +180,12 @@ void pipeline_t::execute(unsigned int lane_number) {
             }
             if (!PAY.buf[index].vp_predicted || ((int64_t) PAY.buf[index].C_value.dw != PAY.buf[index].vp_pred_value)) {
                REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value.dw);
+            }
+            if (!PERFECT_VALUE_PRED && PAY.buf[index].vp_eligible && PAY.buf[index].vpq_allocated) {
+               ValuePred->update_VPQ(PAY.buf[index].vpq_index,
+                                     PAY.buf[index].vpq_phase,
+                                     PAY.buf[index].pc,
+                                     (int64_t) PAY.buf[index].C_value.dw);
             }
          }
          // FIX_ME #14 END

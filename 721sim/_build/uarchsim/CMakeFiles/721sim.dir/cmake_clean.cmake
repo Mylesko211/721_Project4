@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "721sim.pdb"
   "CMakeFiles/721sim.dir/CacheClass.cc.o"
   "CMakeFiles/721sim.dir/CacheClass.cc.o.d"
+  "CMakeFiles/721sim.dir/H3VP.cc.o"
+  "CMakeFiles/721sim.dir/H3VP.cc.o.d"
   "CMakeFiles/721sim.dir/SVP.cc.o"
   "CMakeFiles/721sim.dir/SVP.cc.o.d"
   "CMakeFiles/721sim.dir/alu.cc.o"

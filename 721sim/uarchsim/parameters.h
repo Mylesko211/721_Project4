@@ -25,6 +25,15 @@ extern bool VP_PRED_INT_ALU;
 extern bool VP_PRED_FP_ALU;
 extern bool VP_PRED_LOAD;
 
+// Value prediction (H3VP) – History-Based Highly Reliable Hybrid Value Predictor
+extern bool     USE_H3VP;
+extern uint64_t H3VP_Q_SIZE;
+extern bool     H3VP_ORACLE_CONF;
+extern uint64_t H3VP_INDEX_BITS;
+extern uint64_t H3VP_TAG_BITS;
+extern uint64_t H3VP_CONF1;
+extern uint64_t H3VP_CONF2;
+
 // MDP
 extern uint64_t SSIT_SIZE;
 extern uint64_t LFST_SIZE;

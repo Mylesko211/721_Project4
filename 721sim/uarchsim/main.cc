@@ -470,7 +470,7 @@ int main(int argc, char **argv) {
       NUM_CHECKPOINTS = 64;
       FETCH_QUEUE_SIZE = 64; });
 
-   // team edits 
+   // team edits
    parser.option(0, "vp-perf", 1, [&](const char *s) { PERFECT_VALUE_PRED = (atoi(s) ? true : false); });
    parser.option(0, "vp-svp", 1, [&](const char *s) {
       uint64_t qsize, oracleconf, index_bits, tag_bits, confmax;
@@ -483,6 +483,24 @@ int main(int argc, char **argv) {
       SVP_INDEX_BITS = index_bits;
       SVP_TAG_BITS = tag_bits;
       SVP_CONF_MAX = confmax;
+      USE_H3VP = false;
+   });
+   parser.option(0, "vp-h3vp", 1, [&](const char *s) {
+      // --vp-h3vp=<VPQsize>,<oracleconf>,<#index_bits>,<#tag_bits>,<conf1>,<conf2>
+      uint64_t qsize, oracleconf, index_bits, tag_bits, conf1, conf2;
+      if (sscanf(s, "%lu,%lu,%lu,%lu,%lu,%lu",
+                 &qsize, &oracleconf, &index_bits, &tag_bits, &conf1, &conf2) != 6) {
+         fprintf(stderr,
+            "Incorrect usage of --vp-h3vp=<VPQsize>,<oracleconf>,<#index_bits>,<#tag_bits>,<conf1>,<conf2>\n");
+         exit(-1);
+      }
+      USE_H3VP         = true;
+      H3VP_Q_SIZE      = qsize;
+      H3VP_ORACLE_CONF = (oracleconf ? true : false);
+      H3VP_INDEX_BITS  = index_bits;
+      H3VP_TAG_BITS    = tag_bits;
+      H3VP_CONF1       = conf1;
+      H3VP_CONF2       = conf2;
    });
    parser.option(0, "vp-eligible", 1, [&](const char *s) {
       uint64_t predINTALU, predFPALU, predLOAD;
@@ -495,7 +513,7 @@ int main(int argc, char **argv) {
       VP_PRED_LOAD = (predLOAD ? true : false);
    });
 
-   // end of team edits 
+   // end of team edits
 
    auto argv1 = parser.parse(argv);
    if (!*argv1)

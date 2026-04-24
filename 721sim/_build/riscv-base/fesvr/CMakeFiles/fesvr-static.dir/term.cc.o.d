@@ -1,7 +1,7 @@
 riscv-base/fesvr/CMakeFiles/fesvr-static.dir/term.cc.o: \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/fesvr/term.cc \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/fesvr/term.cc \
  /usr/include/stdc-predef.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/fesvr/term.h \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/fesvr/term.h \
  /usr/include/termios.h /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/bits/long-double.h \
  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \

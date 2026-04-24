@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/alu_ops/. -I/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/alu_ops/.. -I/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base -I/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/_build/uarchsim/alu_ops -I/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/.
+CXX_INCLUDES = -I/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/uarchsim/alu_ops/. -I/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/uarchsim/alu_ops/.. -I/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base -I/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/_build/uarchsim/alu_ops -I/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/.
 
-CXX_FLAGS = -O3 -DNDEBUG -std=c++11 -Wno-sign-compare
+CXX_FLAGS = -std=c++11 -Wno-sign-compare
 

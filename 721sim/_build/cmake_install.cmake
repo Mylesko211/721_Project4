@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim
+# Install script for directory: /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Release")
+    set(CMAKE_INSTALL_CONFIG_NAME "")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -44,8 +44,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/_build/riscv-base/cmake_install.cmake")
-  include("/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/_build/uarchsim/cmake_install.cmake")
+  include("/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/_build/riscv-base/cmake_install.cmake")
+  include("/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/_build/uarchsim/cmake_install.cmake")
 
 endif()
 
@@ -57,5 +57,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/_build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/_build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

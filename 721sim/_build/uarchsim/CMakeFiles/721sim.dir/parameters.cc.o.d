@@ -1,5 +1,5 @@
 uarchsim/CMakeFiles/721sim.dir/parameters.cc.o: \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/parameters.cc \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/uarchsim/parameters.cc \
  /usr/include/stdc-predef.h /usr/include/c++/8/cinttypes \
  /usr/include/c++/8/cstdint \
  /usr/include/c++/8/x86_64-redhat-linux/bits/c++config.h \
@@ -14,5 +14,5 @@ uarchsim/CMakeFiles/721sim.dir/parameters.cc.o: \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
  /usr/include/bits/wchar.h /usr/include/bits/stdint-intn.h \
  /usr/include/bits/stdint-uintn.h /usr/include/inttypes.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/fu.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/ras_recover.h
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/uarchsim/fu.h \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/uarchsim/ras_recover.h

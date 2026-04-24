@@ -1,5 +1,5 @@
 riscv-base/softfloat/CMakeFiles/softfloat.dir/s_eq128.c.o: \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/s_eq128.c \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/s_eq128.c \
  /usr/include/stdc-predef.h \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/stdbool.h \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/stdint.h \
@@ -10,5 +10,5 @@ riscv-base/softfloat/CMakeFiles/softfloat.dir/s_eq128.c.o: \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
  /usr/include/bits/wchar.h /usr/include/bits/stdint-intn.h \
  /usr/include/bits/stdint-uintn.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/platform.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/primitives.h
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/platform.h \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/primitives.h

@@ -248,6 +248,22 @@ pipeline_t::pipeline_t(
    if (PERFECT_VALUE_PRED) {
       ValuePred = nullptr;
    }
+   else if (USE_H3VP) {
+      // When H3VP is active, set SVP_CONF_MAX = H3VP_CONF2 so that rename.cc's
+      // "predicted = (confidence == SVP_CONF_MAX)" gate works with H3VP's
+      // get_confidence(), which returns H3VP_CONF2 when speculating.
+      SVP_CONF_MAX    = H3VP_CONF2;
+      SVP_ORACLE_CONF = H3VP_ORACLE_CONF;
+      ValuePred = new H3VP(H3VP_Q_SIZE,
+                           H3VP_ORACLE_CONF,
+                           H3VP_INDEX_BITS,
+                           H3VP_TAG_BITS,
+                           H3VP_CONF1,
+                           H3VP_CONF2,
+                           VP_PRED_INT_ALU,
+                           VP_PRED_FP_ALU,
+                           VP_PRED_LOAD);
+   }
    else {
       ValuePred = new SVP(SVP_Q_SIZE,
                           SVP_ORACLE_CONF,
@@ -260,6 +276,7 @@ pipeline_t::pipeline_t(
                           VP_PRED_LOAD);
    }
 
+   // Storage accounting variables
    uint64_t svp_entry_tag_bits_accounting = 0;
    uint64_t svp_entry_conf_bits_accounting = 0;
    uint64_t svp_entry_retired_value_bits_accounting = 0;
@@ -268,18 +285,44 @@ pipeline_t::pipeline_t(
    uint64_t svp_entry_bits_accounting = 0;
    uint64_t vpu_total_storage_bits_accounting = 0;
 
-   if (ValuePred) {
+   // H3VP-specific accounting variables
+   uint64_t h3vp_entry_tag_bits          = 0;
+   uint64_t h3vp_entry_hist_bits         = 0;
+   uint64_t h3vp_entry_diff_bits         = 0;
+   uint64_t h3vp_entry_instance_bits     = 0;
+   uint64_t h3vp_entry_numret_bits       = 0;
+   uint64_t h3vp_entry_conf_bits_each    = 0;
+   uint64_t h3vp_entry_failed_bits       = 0;
+   uint64_t h3vp_entry_bits              = 0;
+
+   if (ValuePred && !USE_H3VP) {
+      // SVP accounting
+      SVP *svp = static_cast<SVP*>(ValuePred);
       svp_entry_tag_bits_accounting = SVP_TAG_BITS;
-      svp_entry_conf_bits_accounting = ValuePred->get_bits(SVP_CONF_MAX );
+      svp_entry_conf_bits_accounting = svp->get_bits(SVP_CONF_MAX);
       svp_entry_retired_value_bits_accounting = 64;
       svp_entry_stride_bits_accounting = 64;
-      svp_entry_instance_ctr_bits_accounting = ValuePred->get_bits(SVP_Q_SIZE);
+      svp_entry_instance_ctr_bits_accounting = svp->get_bits(SVP_Q_SIZE);
       svp_entry_bits_accounting = svp_entry_tag_bits_accounting +
                                   svp_entry_conf_bits_accounting +
                                   svp_entry_retired_value_bits_accounting +
                                   svp_entry_stride_bits_accounting +
                                   svp_entry_instance_ctr_bits_accounting;
       vpu_total_storage_bits_accounting = (1ULL << SVP_INDEX_BITS) * svp_entry_bits_accounting;
+   } else if (ValuePred && USE_H3VP) {
+      // H3VP accounting
+      H3VP *h3vp = static_cast<H3VP*>(ValuePred);
+      h3vp_entry_tag_bits       = H3VP_TAG_BITS;
+      h3vp_entry_hist_bits      = 3 * 64;          // hist0, hist1, hist2
+      h3vp_entry_diff_bits      = 64;              // diff
+      h3vp_entry_instance_bits  = h3vp->get_bits(H3VP_Q_SIZE);
+      h3vp_entry_numret_bits    = 2;               // num_ret: 0-3
+      h3vp_entry_conf_bits_each = h3vp->get_bits(H3VP_CONF2);
+      h3vp_entry_failed_bits    = 3;               // failed_arith/2per/3per
+      h3vp_entry_bits = h3vp_entry_tag_bits + h3vp_entry_hist_bits + h3vp_entry_diff_bits +
+                        h3vp_entry_instance_bits + h3vp_entry_numret_bits +
+                        3 * h3vp_entry_conf_bits_each + h3vp_entry_failed_bits;
+      vpu_total_storage_bits_accounting = (1ULL << H3VP_INDEX_BITS) * h3vp_entry_bits;
    }
 
    uint64_t vp_table_bytes = ((vpu_total_storage_bits_accounting + 7ULL) / 8ULL);
@@ -345,25 +388,50 @@ pipeline_t::pipeline_t(
    fprintf(stats_log, "PERFECT_VALUE_PRED  = %d\n", (PERFECT_VALUE_PRED ? 1 : 0));
 
    fprintf(stats_log, "\n=== VALUE PREDICTOR =============================================================\n\n");
-   fprintf(stats_log, "SVP_Q_SIZE      = %" PRIu64 "\n", SVP_Q_SIZE);
-   fprintf(stats_log, "SVP_ORACLE_CONF = %d\n", (SVP_ORACLE_CONF ? 1 : 0));
-   fprintf(stats_log, "SVP_INDEX_BITS  = %" PRIu64 "\n", SVP_INDEX_BITS);
-   fprintf(stats_log, "SVP_TAG_BITS    = %" PRIu64 "\n", SVP_TAG_BITS);
-   fprintf(stats_log, "SVP_CONF_MAX    = %" PRIu64 "\n", SVP_CONF_MAX);
-   fprintf(stats_log, "VP_TABLE_BYTES  = %" PRIu64 "\n", vp_table_bytes);
-   if(!PERFECT_VALUE_PRED) {
+   if (USE_H3VP) {
+      fprintf(stats_log, "PREDICTOR       = H3VP (History-Based Highly Reliable Hybrid)\n");
+      fprintf(stats_log, "H3VP_Q_SIZE     = %" PRIu64 "\n", H3VP_Q_SIZE);
+      fprintf(stats_log, "H3VP_ORACLE_CONF= %d\n", (H3VP_ORACLE_CONF ? 1 : 0));
+      fprintf(stats_log, "H3VP_INDEX_BITS = %" PRIu64 "\n", H3VP_INDEX_BITS);
+      fprintf(stats_log, "H3VP_TAG_BITS   = %" PRIu64 "\n", H3VP_TAG_BITS);
+      fprintf(stats_log, "H3VP_CONF1      = %" PRIu64 "\n", H3VP_CONF1);
+      fprintf(stats_log, "H3VP_CONF2      = %" PRIu64 "\n", H3VP_CONF2);
+      fprintf(stats_log, "VP_TABLE_BYTES  = %" PRIu64 "\n", vp_table_bytes);
       fprintf(stats_log, "Cost Accounting\n");
-      fprintf(stats_log, "\tOne SVP entry:\n");
-      fprintf(stats_log, "\t\ttag: %" PRIu64 " bits\n", svp_entry_tag_bits_accounting);
-      fprintf(stats_log, "\t\tconf: %" PRIu64 " bits\n", svp_entry_conf_bits_accounting);
-      fprintf(stats_log, "\t\tretired_value: %" PRIu64 " bits\n", svp_entry_retired_value_bits_accounting);
-      fprintf(stats_log, "\t\tstride: %" PRIu64 " bits\n", svp_entry_stride_bits_accounting);
-      fprintf(stats_log, "\t\tinstance ctr: %" PRIu64 " bits\n", svp_entry_instance_ctr_bits_accounting);
-      fprintf(stats_log, "\t\tbits/SVP entry: %" PRIu64 " bits\n", svp_entry_bits_accounting);
-      fprintf(stats_log, "\tTotal storage cost (bits) = %" PRIu64 " (%" PRIu64 " SVP entries x %" PRIu64 " bits/SVP entry) = %" PRIu64 " bits\n", (1ULL << SVP_INDEX_BITS), svp_entry_bits_accounting, vpu_total_storage_bits_accounting, (1ULL << SVP_INDEX_BITS) * svp_entry_bits_accounting);
+      fprintf(stats_log, "\tOne H3VP entry:\n");
+      fprintf(stats_log, "\t\ttag:             %" PRIu64 " bits\n", h3vp_entry_tag_bits);
+      fprintf(stats_log, "\t\thist0+hist1+hist2: %" PRIu64 " bits\n", h3vp_entry_hist_bits);
+      fprintf(stats_log, "\t\tdiff:            %" PRIu64 " bits\n", h3vp_entry_diff_bits);
+      fprintf(stats_log, "\t\tinstance ctr:    %" PRIu64 " bits\n", h3vp_entry_instance_bits);
+      fprintf(stats_log, "\t\tnum_ret:         %" PRIu64 " bits\n", h3vp_entry_numret_bits);
+      fprintf(stats_log, "\t\tconf per pred (x3): %" PRIu64 " bits each\n", h3vp_entry_conf_bits_each);
+      fprintf(stats_log, "\t\tfailed flags:    %" PRIu64 " bits\n", h3vp_entry_failed_bits);
+      fprintf(stats_log, "\t\tbits/H3VP entry: %" PRIu64 " bits\n", h3vp_entry_bits);
+      fprintf(stats_log, "\tTotal storage cost = %" PRIu64 " entries x %" PRIu64 " bits = %" PRIu64 " bits\n",
+              (1ULL << H3VP_INDEX_BITS), h3vp_entry_bits, vpu_total_storage_bits_accounting);
+   } else {
+      fprintf(stats_log, "PREDICTOR       = SVP (Stride Value Predictor)\n");
+      fprintf(stats_log, "SVP_Q_SIZE      = %" PRIu64 "\n", SVP_Q_SIZE);
+      fprintf(stats_log, "SVP_ORACLE_CONF = %d\n", (SVP_ORACLE_CONF ? 1 : 0));
+      fprintf(stats_log, "SVP_INDEX_BITS  = %" PRIu64 "\n", SVP_INDEX_BITS);
+      fprintf(stats_log, "SVP_TAG_BITS    = %" PRIu64 "\n", SVP_TAG_BITS);
+      fprintf(stats_log, "SVP_CONF_MAX    = %" PRIu64 "\n", SVP_CONF_MAX);
+      fprintf(stats_log, "VP_TABLE_BYTES  = %" PRIu64 "\n", vp_table_bytes);
+      if (!PERFECT_VALUE_PRED) {
+         fprintf(stats_log, "Cost Accounting\n");
+         fprintf(stats_log, "\tOne SVP entry:\n");
+         fprintf(stats_log, "\t\ttag: %" PRIu64 " bits\n", svp_entry_tag_bits_accounting);
+         fprintf(stats_log, "\t\tconf: %" PRIu64 " bits\n", svp_entry_conf_bits_accounting);
+         fprintf(stats_log, "\t\tretired_value: %" PRIu64 " bits\n", svp_entry_retired_value_bits_accounting);
+         fprintf(stats_log, "\t\tstride: %" PRIu64 " bits\n", svp_entry_stride_bits_accounting);
+         fprintf(stats_log, "\t\tinstance ctr: %" PRIu64 " bits\n", svp_entry_instance_ctr_bits_accounting);
+         fprintf(stats_log, "\t\tbits/SVP entry: %" PRIu64 " bits\n", svp_entry_bits_accounting);
+         fprintf(stats_log, "\tTotal storage cost (bits) = %" PRIu64 " (%" PRIu64 " SVP entries x %" PRIu64 " bits/SVP entry) = %" PRIu64 " bits\n",
+                 (1ULL << SVP_INDEX_BITS), svp_entry_bits_accounting, vpu_total_storage_bits_accounting,
+                 (1ULL << SVP_INDEX_BITS) * svp_entry_bits_accounting);
+      }
    }
 
-   
    fprintf(stats_log, "VP_PRED_INT_ALU = %d\n", (VP_PRED_INT_ALU ? 1 : 0));
    fprintf(stats_log, "VP_PRED_FP_ALU  = %d\n", (VP_PRED_FP_ALU ? 1 : 0));
    fprintf(stats_log, "VP_PRED_LOAD    = %d\n", (VP_PRED_LOAD ? 1 : 0));

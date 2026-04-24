@@ -37,6 +37,7 @@
 #include "issue_queue.h"       // ISSUE QUEUE
 
 #include "SVP.h"               // STRIDE VALUE PREDICTOR
+#include "H3VP.h"              // H3VP HYBRID VALUE PREDICTOR
 
 #include "mdp.h"               // Memory Dependency Prediction
 
@@ -328,7 +329,7 @@ private:
    /////////////////////////////////////////////////////////////
    // Value predictor.
    /////////////////////////////////////////////////////////////
-   SVP *ValuePred;
+   VPBase *ValuePred;
 
    /////////////////////////////////////////////////////////////
    // Memory Dependency Prediction

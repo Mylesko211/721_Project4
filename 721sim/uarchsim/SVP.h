@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 
+#include "VPBase.h"
+
 using namespace std;
 
 struct VPQ_entry{
@@ -27,7 +29,7 @@ struct checkpoint_entry {
     uint64_t pc;
 };
 
-class SVP {
+class SVP : public VPBase {
 public:
     // params
     uint64_t qsize;

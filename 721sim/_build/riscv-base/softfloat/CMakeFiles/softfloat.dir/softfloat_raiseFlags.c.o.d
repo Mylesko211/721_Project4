@@ -1,9 +1,9 @@
 riscv-base/softfloat/CMakeFiles/softfloat.dir/softfloat_raiseFlags.c.o: \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/softfloat_raiseFlags.c \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/softfloat_raiseFlags.c \
  /usr/include/stdc-predef.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/platform.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/softfloat.h \
- /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/softfloat_types.h \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/platform.h \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/softfloat.h \
+ /mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/softfloat_types.h \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/stdbool.h \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/stdint.h \
  /usr/include/stdint.h /usr/include/bits/libc-header-start.h \

@@ -24,6 +24,15 @@ bool VP_PRED_INT_ALU = true;
 bool VP_PRED_FP_ALU = true;
 bool VP_PRED_LOAD = true;
 
+// Value prediction (H3VP)
+bool     USE_H3VP        = false;
+uint64_t H3VP_Q_SIZE     = 256;
+bool     H3VP_ORACLE_CONF = false;
+uint64_t H3VP_INDEX_BITS = 10;
+uint64_t H3VP_TAG_BITS   = 10;
+uint64_t H3VP_CONF1      = 10;
+uint64_t H3VP_CONF2      = 112;
+
 // MDP
 uint64_t SSIT_SIZE = 4096;
 uint64_t LFST_SIZE = 1024;

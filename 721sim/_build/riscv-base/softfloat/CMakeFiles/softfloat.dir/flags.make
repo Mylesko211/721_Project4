@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = -I/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/riscv-base/softfloat/.
+C_INCLUDES = -I/mnt/ncsudrive/n/nsngo/ECE721/Project4.1/721_Project4/721sim/riscv-base/softfloat/.
 
-C_FLAGS = -O3 -DNDEBUG -Wno-sign-compare
+C_FLAGS = -Wno-sign-compare
 
