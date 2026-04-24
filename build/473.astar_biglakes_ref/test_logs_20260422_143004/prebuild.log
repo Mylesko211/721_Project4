@@ -1,0 +1,39 @@
+[  3%] Built target fesvr-static
+[ 19%] Built target softfloat
+[ 50%] Built target uarchsim-alu-ops
+[ 95%] Built target riscv
+[ 95%] Building CXX object uarchsim/CMakeFiles/721sim.dir/CacheClass.cc.o
+[ 95%] Building CXX object uarchsim/CMakeFiles/721sim.dir/SVP.cc.o
+[ 95%] Building CXX object uarchsim/CMakeFiles/721sim.dir/alu.cc.o
+[ 95%] Building CXX object uarchsim/CMakeFiles/721sim.dir/checker.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/decode.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/execute.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/debug.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/dispatch.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/fetch.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/fetch_queue.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/fetchunit.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/issue_queue.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/lane.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/lsu.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/payload.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/pipeline.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/pipeline_register.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/register_read.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/rename.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/retire.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/schedule.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/sim.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/squash.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/stats.cc.o
+[ 96%] Building CXX object uarchsim/CMakeFiles/721sim.dir/writeback.cc.o
+/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/pipeline.cc: In constructor ‘pipeline_t::pipeline_t(sim_t*, mmu_t*, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t*, uint32_t*)’:
+/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/pipeline.cc:372:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘long long unsigned int’ [-Wformat=]
+       fprintf(stats_log, "\tTotal storage cost (bits) = %" PRIu64 " (%" PRIu64 " SVP entries x %" PRIu64 " bits/SVP entry) = %" PRIu64 " bits\n", (1ULL << SVP_INDEX_BITS), svp_entry_bits_accounting, vpu_total_storage_bits_accounting, (1ULL << SVP_INDEX_BITS) * svp_entry_bits_accounting);
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  ~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/721sim/uarchsim/pipeline.cc:372:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 6 has type ‘long long unsigned int’ [-Wformat=]
+[ 96%] Linking CXX executable 721sim
+[100%] Built target 721sim
+Command: make -j112
+Build dir: /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build
+================================================================================

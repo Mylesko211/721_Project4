@@ -1,0 +1,52 @@
+Removing the simenv at /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv
+rm -frv /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv
+removed '/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/BigLakes2048.cfg'
+removed '/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/BigLakes2048.bin'
+removed '/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/astar_base.rv64'
+removed directory '/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app'
+removed directory '/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv'
+Setting up a new simenv at /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv
+atool-simenv spawn 473.astar_biglakes_ref /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv
+Spawning simenv for app 473.astar_biglakes_ref
+Mkdir /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app
+Symlink /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/sysroots/473.astar_ref/app/BigLakes2048.bin -> /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/BigLakes2048.bin
+Mkdir /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app
+Symlink /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/sysroots/473.astar_ref/app/BigLakes2048.cfg -> /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/BigLakes2048.cfg
+Mkdir /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app
+Symlink /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/sysroots/473.astar_ref/app/astar_base.rv64 -> /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/astar_base.rv64
+Verifing the simenv at /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv
+atool-simenv verify 473.astar_biglakes_ref /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv
+Begin pre-run file environment checking: 473.astar_biglakes_ref @ [/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv]
+
+Checking path [/app/BigLakes2048.bin] <--> [/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/BigLakes2048.bin]
+Checking path [/app/BigLakes2048.cfg] <--> [/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/BigLakes2048.cfg]
+Checking path [/app/astar_base.rv64] <--> [/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv/app/astar_base.rv64]
+
+Pre-Run FS checking passed.
+Starting simulation
+./../uarchsim/721sim -m512 -c/mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/checkpoints/473.astar_biglakes_ref/473.astar_biglakes_ref.1844.0.50.gz --vp-eligible=1,0,1 --vp-svp=300,0,8,0,31 --mdp=5,0 --perf=0,0,0,1 -t --cbpALG=0 --fq=64 --cp=32 --al=256 --lsq=128 --iq=64 --iqnp=4 --fw=8 --dw=8 --iw=16 --rw=8 -e10000000   +chroot=/mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref/simenv +target-cwd=/app pk   astar_base.rv64 BigLakes2048.cfg 
+
+Copyright (c) 2018 by Eric Rotenberg.  All Rights Reserved.
+Welcome to the ECE 721 Simulator.  This is a custom simulator
+developed at North Carolina State University by Eric Rotenberg
+and his students.  It uses the RISCV ISA and functional simulation tools.
+
+****Initialization complete****
+Restoring checkpoint from /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/checkpoints/473.astar_biglakes_ref/473.astar_biglakes_ref.1844.0.50.gz
+Done restoring HTIF checkpoint from /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/checkpoints/473.astar_biglakes_ref/473.astar_biglakes_ref.1844.0.50.gz
+Done restoring mem/reg checkpoint from /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/checkpoints/473.astar_biglakes_ref/473.astar_biglakes_ref.1844.0.50.gz
+Functional simulator running ahead
+****Initialization complete****
+Restoring checkpoint from /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/checkpoints/473.astar_biglakes_ref/473.astar_biglakes_ref.1844.0.50.gz
+Done restoring HTIF checkpoint from /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/checkpoints/473.astar_biglakes_ref/473.astar_biglakes_ref.1844.0.50.gz
+Done restoring mem/reg checkpoint from /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/checkpoints/473.astar_biglakes_ref/473.astar_biglakes_ref.1844.0.50.gz
+Starting MICROS
+GRADING PLATEAU: 1000
+GRADING PLATEAU: 10000
+GRADING PLATEAU: 100000
+GRADING PLATEAU: 1000000
+GRADING PLATEAU: 10000000
+Stopping MICROS: HTIF Exit Code 0
+Command: make cleanrun SIM_FLAGS_EXTRA=--vp-eligible=1,0,1 --vp-svp=300,0,8,0,31 --mdp=5,0 --perf=0,0,0,1 -t --cbpALG=0 --fq=64 --cp=32 --al=256 --lsq=128 --iq=64 --iqnp=4 --fw=8 --dw=8 --iw=16 --rw=8 -e10000000
+Workdir: /mnt/ncsudrive/m/mkoakley/ECE721/Project4_final2/build/473.astar_biglakes_ref
+================================================================================
